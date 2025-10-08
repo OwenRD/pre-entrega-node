@@ -1,45 +1,91 @@
 import { obtenerProductos, obtenerProducto, agregarProducto, eliminarProducto } from "./fakestoreAPI.js"
 
 const argumentos = process.argv.slice(2)
+const [metodo, agg, ...rest] = argumentos
 
+if (metodo) {
 
-    const [metodo, agg] = argumentos
+    switch (metodo) {
+        case "GET":
 
-    if(metodo === "GET" && agg === "products"){
+            if (agg) {
 
-        obtenerProductos()
+                if (agg === "products") {
 
-    }else if(metodo === "GET" && agg.startsWith("products/") ){
-        const arg = agg.split("/")
+                    obtenerProductos()
 
-        console.log(arg)
-        obtenerProducto(arg[1])
+                } else if (agg.startsWith("products/")) {
+                    const arg = agg.split("/")
 
-    }else if(metodo === "POST" && agg === "products"){
+                    if (arg[1]) {
+                        obtenerProducto(arg[1])
+                    } else {
+                        console.log("falta datos")
+                    }
 
-        console.log({
-            "id": 21,
-            "price": argumentos[3],
-            "description": "test",
-            "category": argumentos[4],
-            "image": "http://example.com",
-            "title": argumentos[2],
-        })
+                } else {
+                    console.log("NO se reconocio el comando")
+                }
 
-        agregarProducto({
-            "id": 21,
-            "price": argumentos[3],
-            "description": "test",
-            "category": argumentos[4],
-            "image": "http://example.com",
-            "title": argumentos[2],
-        })
+            } else {
+                console.log("Faltan argumentos")
+            }
 
-    }else if(metodo == "DELETE" && agg.startsWith("products/")){
-        const arg = agg.split("/")
+            break;
+        case "POST":
 
-        eliminarProducto(arg[1])
+            if (agg) {
 
-    }else{
-        console.log("NO se reconocio el comando")
+                if (agg == "products") {
+
+                    if (rest.length == 3) {
+                        agregarProducto({
+                            "id": 21,
+                            "price": argumentos[3],
+                            "description": "test",
+                            "category": argumentos[4],
+                            "image": "http://example.com",
+                            "title": argumentos[2],
+                        })
+                    } else {
+                        console.log("Faltan argumentos")
+                    }
+
+                } else {
+                    console.log("NO se reconocio el comando")
+                }
+
+            } else {
+                console.log("Faltan argumentos")
+            }
+
+            break;
+        case "DELETE":
+
+            if (agg) {
+
+                if (agg.startsWith("products/")) {
+                    const arg = agg.split("/")
+
+                    if(arg[1]){
+                        eliminarProducto(arg[1])
+                    }else{
+                        console.log("Faltan argumentos")
+                    }
+
+                }else{
+                    console.log("NO se reconocio el comando")
+                }
+
+            } else {
+                console.log("Faltan argumentos")
+            }
+
+            break;
+        default:
+            console.log("NO se reconocio el comando")
     }
+
+} else {
+    console.log("Se debe agregar un comando")
+}
